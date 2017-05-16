@@ -1,0 +1,39 @@
+#!/bin/bash
+
+set -e
+
+params="-X POST"
+private="false"
+expire=""
+
+while [ ${#} != 0 ]; do
+  case "${1}" in
+  -h | --help)
+    echo "usage: ${0} [--expire | -e | --private | -p] <content>"
+    echo ""
+    echo "  -h, --help        Show this help, exit"
+    echo "  -e, --expire <s>  Expire the paste after <s> seconds"
+    echo "  -p, --private     Set the paste to be private"
+    echo "  content           The content to send"
+    exit 0;;
+  -p | --private)
+    private="true"
+    shift;;
+  -e | --expire)
+    expire="${2}"
+    shift 2;;
+  *)
+    content=("${@}")
+    break;;
+  esac
+done
+
+if [ "${private}" = "true" ]; then
+    params="${params} -F p=1"
+fi
+
+if [ ! -z "${expire}" ]; then
+    params="${params} -F sunset=${expire}"
+fi
+
+curl ${params} -F c=@$1 https://ptpb.pw/

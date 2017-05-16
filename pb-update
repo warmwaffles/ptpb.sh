@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# First arg is the id
+# Second arg is the file
+
+set -e
+
+curl -X PUT -F p=1 -F c=@$2 https://ptpb.pw/$1
